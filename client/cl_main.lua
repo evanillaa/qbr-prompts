@@ -10,9 +10,9 @@ function createPrompt(name, coords, key, text, options)
         Prompts[name].options = options
         Prompts[name].active = false
         Prompts[name].prompt = nil
-        print('[qb-prompts] Prompt with name ' .. name .. ' registered!')
+        print('[qbr-prompts] Prompt with name ' .. name .. ' registered!')
     else
-        print('[qb-prompts]  Prompt with name ' .. name .. ' already exists!')
+        print('[qbr-prompts]  Prompt with name ' .. name .. ' already exists!')
     end
 end
 
@@ -33,7 +33,7 @@ CreateThread(function()
                         Citizen.InvokeNative(0x8A0FB4D03A630D21, Prompts[k].prompt, true)
                         Citizen.InvokeNative(0x71215ACCFDE075EE, Prompts[k].prompt, true)
                         Prompts[k].active = true
-                        print('[qb-prompts] Prompt with name ' .. Prompts[k].name .. ' activated!')
+                        print('[qbr-prompts] Prompt with name ' .. Prompts[k].name .. ' activated!')
                     end
                     if (Citizen.InvokeNative(0xE0F65F0640EF0617, Prompts[k].prompt)) then
                         executeOptions(Prompts[k].options)
@@ -48,7 +48,7 @@ CreateThread(function()
                         Citizen.InvokeNative(0x71215ACCFDE075EE, Prompts[k].prompt, false)
                         Prompts[k].prompt = nil
                         Prompts[k].active = false
-                        print('[qb-prompts] Prompt with name ' .. Prompts[k].name .. ' removed!')
+                        print('[qbr-prompts] Prompt with name ' .. Prompts[k].name .. ' removed!')
                     end
                 end
             end
