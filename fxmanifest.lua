@@ -5,8 +5,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 description 'QBR-Prompts'
 version '1.0.0'
 
-client_script 'client/cl_*.lua'
-server_script 'server/sv_*.lua'
+client_script 'client/main.lua'
 
 ui_page 'html/index.html'
 
