@@ -1,6 +1,6 @@
 local Prompts = {}
 
-function createPrompt(name, coords, key, text, options)
+local function createPrompt(name, coords, key, text, options)
     if (Prompts[name] == nil) then
         Prompts[name] = {}
         Prompts[name].name = name
@@ -15,6 +15,42 @@ function createPrompt(name, coords, key, text, options)
         print('[qbr-prompts]  Prompt with name ' .. name .. ' already exists!')
     end
 end
+
+local function executeOptions(options)
+    if (options.type == 'client') then
+        if (options.args == nil) then
+            TriggerEvent(options.event)
+        else
+            TriggerEvent(options.event, table.unpack(options.args))
+        end
+    else
+        if (options.args == nil) then
+            TriggerServerEvent(options.event)
+        else
+            TriggerServerEvent(options.event, table.unpack(options.args))
+        end
+    end
+end
+
+local function setupPrompt(prompt)
+    local str = prompt.text
+    prompt.prompt = Citizen.InvokeNative(0x04F97DE45A519419)
+    Citizen.InvokeNative(0xB5352B7494A08258, prompt.prompt, prompt.key)
+    str = CreateVarString(10, 'LITERAL_STRING', str)
+    Citizen.InvokeNative(0x5DD02A8318420DD7, prompt.prompt, str)
+    Citizen.InvokeNative(0x8A0FB4D03A630D21, prompt.prompt, false)
+    Citizen.InvokeNative(0x71215ACCFDE075EE, prompt.prompt, false)
+    Citizen.InvokeNative(0x94073D5CA3F16B7B, prompt.prompt, true)
+    Citizen.InvokeNative(0xF7AA2696A22AD8B9, prompt.prompt)
+end
+
+AddEventHandler('onResourceStop', function()
+    for k,v in pairs(Prompts) do
+        Citizen.InvokeNative(0x8A0FB4D03A630D21, Prompts[k].prompt, false)
+        Citizen.InvokeNative(0x71215ACCFDE075EE, Prompts[k].prompt, false)
+        Prompts[k].prompt = nil
+    end
+end)
 
 CreateThread(function()
     while true do
@@ -54,42 +90,6 @@ CreateThread(function()
             end
         end
         Wait(sleep)
-    end
-end)
-
-function executeOptions(options)
-    if (options.type == 'client') then
-        if (options.args == nil) then
-            TriggerEvent(options.event)
-        else
-            TriggerEvent(options.event, table.unpack(options.args))
-        end
-    else
-        if (options.args == nil) then
-            TriggerServerEvent(options.event)
-        else
-            TriggerServerEvent(options.event, table.unpack(options.args))
-        end
-    end
-end
-
-function setupPrompt(prompt)
-    local str = prompt.text
-    prompt.prompt = Citizen.InvokeNative(0x04F97DE45A519419)
-    Citizen.InvokeNative(0xB5352B7494A08258, prompt.prompt, prompt.key)
-    str = CreateVarString(10, 'LITERAL_STRING', str)
-    Citizen.InvokeNative(0x5DD02A8318420DD7, prompt.prompt, str)
-    Citizen.InvokeNative(0x8A0FB4D03A630D21, prompt.prompt, false)
-    Citizen.InvokeNative(0x71215ACCFDE075EE, prompt.prompt, false)
-    Citizen.InvokeNative(0x94073D5CA3F16B7B, prompt.prompt, true)
-    Citizen.InvokeNative(0xF7AA2696A22AD8B9, prompt.prompt)
-end
-
-AddEventHandler('onResourceStop', function()
-    for k,v in pairs(Prompts) do
-        Citizen.InvokeNative(0x8A0FB4D03A630D21, Prompts[k].prompt, false)
-        Citizen.InvokeNative(0x71215ACCFDE075EE, Prompts[k].prompt, false)
-        Prompts[k].prompt = nil
     end
 end)
 
